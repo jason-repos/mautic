@@ -77,7 +77,7 @@ class LeadSubscriber implements EventSubscriberInterface
                     $event->addEvent(
                         [
                             'event'      => $eventTypeKey,
-                            'eventId'    => $eventTypeKey.$stat['id'],
+                            'eventId'    => $eventTypeKey . $stat['id'],
                             'eventLabel' => [
                                 'label' => $stat['name'],
                                 'href'  => $this->router->generate(
@@ -91,7 +91,7 @@ class LeadSubscriber implements EventSubscriberInterface
                                 'stat' => $stat,
                                 'type' => 'sent',
                             ],
-                            'contentTemplate' => 'MauticDynamicContentBundle:SubscribedEvents\Timeline:index.html.php',
+                            'contentTemplate' => 'MauticDynamicContentBundle:SubscribedEvents\Timeline:index.html.twig',
                             'icon'            => 'fa-puzzle-piece',
                             'contactId'       => $contactId,
                         ]
