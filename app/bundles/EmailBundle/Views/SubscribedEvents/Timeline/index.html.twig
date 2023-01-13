@@ -5,7 +5,8 @@
     @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
 #}
 
-{% if (item = event.extra is defined) ? event.extra.stat : false %}
+{% if (event.extra is defined) ? event.extra.stat : false %}
+    {% set item = event.extra %}
 <p>
     {% if item.isFailed is not empty %}
 
@@ -28,7 +29,7 @@
     {% if item.viewedInBrowser is not empty %}
         {% trans %}mautic.email.timeline.event.viewed.in.browser{% endtrans %}
     {% endif %}
-    {%  if item.retryCount is not empty %}
+    {% if item.retryCount is not empty %}
         {{ 'mautic.email.timeline.event.retried'|trans({'%count%' : item.retryCount}) }}
     {% endif %}
     {% if item.list_name is not empty %}
