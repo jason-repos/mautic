@@ -217,9 +217,9 @@ class DynamicContentController extends FormController
         return $this->delegateView(
             [
                 'viewParameters' => [
-                    'form' => $form->createView(), //$this->setFormTheme($form, 'MauticDynamicContentBundle:DynamicContent:form.html.twig', 'MauticDynamicContentBundle:FormTheme\Filter'),
+                    'form' => $this->setFormTheme($form, 'MauticDynamicContentBundle:DynamicContent:form.html.php', 'MauticDynamicContentBundle:FormTheme\Filter'),
                 ],
-                'contentTemplate' => 'MauticDynamicContentBundle:DynamicContent:form.html.twig',
+                'contentTemplate' => 'MauticDynamicContentBundle:DynamicContent:form.html.php',
                 'passthroughVars' => $passthrough,
             ]
         );
@@ -322,10 +322,10 @@ class DynamicContentController extends FormController
         return $this->delegateView(
             [
                 'viewParameters' => [
-                    'form'          => $form->createView(), //$this->setFormTheme($form, 'MauticDynamicContentBundle:DynamicContent:form.html.twig', 'MauticDynamicContentBundle:FormTheme\Filter'),
+                    'form'          => $this->setFormTheme($form, 'MauticDynamicContentBundle:DynamicContent:form.html.php', 'MauticDynamicContentBundle:FormTheme\Filter'),
                     'currentListId' => $objectId,
                 ],
-                'contentTemplate' => 'MauticDynamicContentBundle:DynamicContent:form.html.twig',
+                'contentTemplate' => 'MauticDynamicContentBundle:DynamicContent:form.html.php',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_dynamicContent_index',
                     'route'         => $action,

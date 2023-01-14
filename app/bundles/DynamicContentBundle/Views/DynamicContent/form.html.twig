@@ -87,10 +87,11 @@
                                 <div class="col-xs-7">
                                     <label>{% trans %}Filters{% endtrans %}</label>
                                 </div>
-                            
                                 <div class="col-xs-5">
                                     <div class="form-group">
-                                        <div class="available-filters mb-md pl-0" data-prototype="{{ form_widget(form.filters.vars.prototype)|escape }}" data-index="{{ index + 1 }}">
+                                        <div class="available-filters mb-md pl-0"
+                                             data-prototype="{{ form_widget(form['filters'].vars['prototype'])|escape }}"
+                                             data-index="{{ index + 1 }}">
                                             <select class="chosen form-control" id="available_filters">
                                                 <option value=""></option>
                                                 {% for object, field in fields %}
