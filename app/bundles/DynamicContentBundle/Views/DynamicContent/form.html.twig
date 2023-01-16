@@ -172,8 +172,9 @@
 
 <div class="hide" id="templates">
     {% for dataKey, template in templates %}
-        {% set attr = ('tags' == dataKey) ? : ' data-placeholder="' ~ 'mautic.lead.tags.select_or_create'|trans ~ '" data-no-results-text="' ~ 'mautic.lead.tags.enter_to_create'|trans ~ '" data-allow-add="true" onchange="Mautic.createLeadTag(this)"' %} 
-        
+        {% set select_or_create = 'mautic.lead.tags.select_or_create'|trans %}
+        {% set enter_to_create = 'mautic.lead.tags.enter_to_create'|trans %}
+        {% set attr = ('tags' == dataKey) ? " data-placeholder=\"#{select_or_create}\" data-no-results-text=\"#{enter_to_create}\" data-allow-add=\"true\" onchange=\"Mautic.createLeadTag(this)\"" : "" %}
         <select class="form-control not-chosen {{ template }}" name="dwc[filters][__name__][filter]" id="dwc_filters___name___filter" {{ attr }}>
             {% if form.vars[dataKey] is defined %}
                 {% for value, label in form.vars[dataKey] %}
@@ -187,7 +188,7 @@
                         {% if 'lists' == dataKey and currentListId is defined and value == currentListId %}
                             
                         {% else %}
-                            <option value="{{ value }}">$label</option>
+                            <option value="{{ value }}">{{ label }}</option>
                         {% endif %}
                     {% endif %}
                 {% endfor %}
