@@ -1,77 +1,66 @@
+{% set mauticTemplateVars = mauticTemplateVars is defined ? mauticTemplateVars : [] %}
 {% if trackables is not empty %}
     <div class="table-responsive">
         <table class="table table-hover table-striped table-bordered click-list">
             <thead>
             <tr>
-                <td>{% trans %}mautic.trackable.click_url{% endtrans %}</td>
-                <td>{% trans %}mautic.trackable.click_count{% endtrans %}</td>
-                <td>{% trans %}mautic.trackable.click_unique_count{% endtrans %}</td>
-                {{ content.getCustomContent('click_counts_headers', _context) }}
-                <td>{% trans %}mautic.trackable.click_track_id{% endtrans %}</td>
+                <td>{{ 'mautic.trackable.click_url'|trans }}</td>
+                <td>{{ 'mautic.trackable.click_count'|trans }}</td>
+                <td>{{ 'mautic.trackable.click_unique_count'|trans }}</td>
+                {{ customContent('click_counts_headers', mauticTemplateVars) }}
+                <td>{{ 'mautic.trackable.click_track_id'|trans }}</td>
             </tr>
             </thead>
             <tbody>
-                <?php
-                    $totalClicks       = 0;
-                    $totalUniqueClicks = 0;
-                    foreach ($trackables as $link):
-                        $totalClicks += $link['hits'];
-                        $totalUniqueClicks += $link['unique_hits'];
-                        ?>
+                    {% set totalClicks       = 0 %}
+                    {% set totalUniqueClicks = 0 %}
+                    {% for link in trackables %}
+                        {% set totalClicks = totalClicks + linkhits %}
+                        {% set totalUniqueClicks = totalUniqueClicks + link.unique_hits %}
                         <tr>
-                            <td class="long-text"><a href="<?php echo $link['url']; ?>"><?php echo $link['url']; ?></a></td>
-                            <td class="text-center"><?php echo $link['hits']; ?></td>
+                            <td class="long-text"><a href="{{ link.url }}">{{ link.url }}</a></td>
+                            <td class="text-center">{{ link.hits }}</td>
                             <td class="text-center">
                                 <span class="mt-xs label label-primary has-click-event clickable-stat">
-                        <?php if (isset($channel) && isset($entity)): ?>
-                            <a href="<?php echo $view['router']->path(
-                                'mautic_contact_index',
-                                ['search' => $view['translator']->trans('mautic.lead.lead.searchcommand.page_source').':'.$channel.' '.$view['translator']->trans('mautic.lead.lead.searchcommand.page_source_id').':'.$entity->getId().' '.$view['translator']->trans('mautic.lead.lead.searchcommand.page_id').':'.$link['id']]
-                            ); ?>" data-toggle="tooltip"
-                               title="<?php echo $view['translator']->trans('mautic.email.stat.simple.tooltip'); ?>">
-                               <?php echo $link['unique_hits']; ?>
+                        {% if channel is defined and entity is defined %}
+                            <a href="{{ path('mautic_contact_index', {'search' : 'mautic.lead.lead.searchcommand.page_source'|trans ~ ':' ~ channel ~ ' ' ~ 'mautic.lead.lead.searchcommand.page_source_id'|trans ~ ':' ~ entity.getId() ~ ' ' ~ 'mautic.lead.lead.searchcommand.page_id'|trans ~ ':' ~ link.id}) }}"
+                                data-toggle="tooltip"
+                                title="{{ 'mautic.email.stat.simple.tooltip'|trans }}">
+                                {{ link.unique_hits }}
                             </a>
-                        <?php else: ?>
-                            <?php echo $link['unique_hits']; ?>
-                        <?php endif; ?>
+                        {% else %}
+                            {{ link.unique_hits }}
+                        {% endif %}
                         </span>
                             </td>
-                            <?php echo $view['content']->getCustomContent('click_counts', array_merge($mauticTemplateVars, ['redirect_id' => $link['redirect_id']])); ?>
-                            <td><?php echo $link['redirect_id']; ?></td>
+                            {{ customContent('click_counts', mauticTemplateVars|merge({'redirect_id' : link.redirect_id})) }}
+                            <td>{{ link.redirect_id }}</td>
                         </tr>
-                <?php endforeach; ?>
+                {% endfor %}
 
                 <tr>
-                    <td class="long-text"><?php echo $view['translator']->trans('mautic.trackable.total_clicks'); ?></td>
-                    <td class="text-center"><?php echo $totalClicks; ?></td>
+                    <td class="long-text">{{ 'mautic.trackable.total_clicks'|trans }}</td>
+                    <td class="text-center">{{ totalClicks }}</td>
                     <td class="text-center">
                         <span class="mt-xs label label-primary has-click-event clickable-stat">
-                  <?php if (isset($channel) && isset($entity)): ?>
-                      <a href="<?php echo $view['router']->path(
-                          'mautic_contact_index',
-                          ['search' => $view['translator']->trans('mautic.lead.lead.searchcommand.page_source').':'.$channel.' '.$view['translator']->trans('mautic.lead.lead.searchcommand.page_source_id').':'.$entity->getId()]
-                      ); ?>" data-toggle="tooltip"
-                         title="<?php echo $view['translator']->trans('mautic.email.stat.simple.tooltip'); ?>">
-                        <?php echo $totalUniqueClicks; ?>
+                        {% if channel is defined and entity is defined %}
+                            <a href="{{ path('mautic_contact_index',
+                                {'search' : 'mautic.lead.lead.searchcommand.page_source'|trans ~ ':' ~ channel ~ ' ' ~ 'mautic.lead.lead.searchcommand.page_source_id'|trans ~ ':' ~ entity.getId()}) }}"
+                                data-toggle="tooltip"
+                                title="{{ 'mautic.email.stat.simple.tooltip'|trans }}">
+                                {{ totalUniqueClicks }}
                             </a>
-                  <?php else: ?>
-                      <?php echo $totalUniqueClicks; ?>
-                  <?php endif; ?>
+                        {% else %}
+                            {{ totalUniqueClicks }}
+                        {% endif %}
                         </span>
                     </td>
                     <td></td>
                 </tr>
-
             </tbody>
         </table>
     </div>
 {% else %}
-    {{- include(
-        'MauticCoreBundle:Helper:noresults.html.twig',
-        {
-            header: 'mautic.trackable.click_counts.header_none',
-            message: 'mautic.trackable.click_counts.none',
-        })
-    }}
+    {{- include('MauticCoreBundle:Helper:noresults.html.twig', {'header' : 'mautic.trackable.click_counts.header_none', 'message' : 'mautic.trackable.click_counts.none'}) -}}
     <div class="clearfix"></div>
 {% endif %}
