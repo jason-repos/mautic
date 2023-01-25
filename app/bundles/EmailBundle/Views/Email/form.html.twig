@@ -1,5 +1,4 @@
 {% extends 'MauticCoreBundle:Default:content.html.twig' %}
-
 {% block mauticContent %}email{% endblock %}
 
 {% set dynamicContentPrototype = form.dynamicContent.vars.prototype %}
@@ -46,9 +45,17 @@
 {% if previewUrl is not defined %}
     {% set previewUrl = '' %}
 {% endif %}
-
-{% set mauticTemplateVars = mauticTemplateVars|default([]) %}
-
+{% set mauticTemplateVars = mauticTemplateVars is defined ? mauticTemplateVars : [] %}
+{% form_theme form with [
+    'MauticEmailBundle:FormTheme:Email/_email_abtest_settings_properties_row.html.twig',
+    'MauticEmailBundle:FormTheme:Email/_email_variantSettings_properties_row.html.twig',
+    'MauticEmailBundle:FormTheme:Email/_emailform_dynamicContent_entry_content_row.html.twig',
+    'MauticEmailBundle:FormTheme:Email/_emailform_dynamicContent_entry_filters_entry_filters_entry_widget.html.twig',
+    'MauticEmailBundle:FormTheme:Email/_emailform_dynamicContent_rest.html.twig',
+    'MauticEmailBundle:FormTheme:Email/dynamic_content_filter_entry_widget.html.twig',
+    'MauticEmailBundle:FormTheme:Email/dynamic_content_filter_widget.html.twig',
+]
+%}
 {% block content %}
     {{ form_start(form, {'attr' : attr}) }}
     <div class="box-layout">
@@ -86,8 +93,7 @@
                                 'type'   : 'email',
                                 'themes' : themes,
                                 'active' : form.template.vars.value,
-                            })
-                            -}}
+                            }) -}}
                         </div>
                         <div class="tab-pane fade bdr-w-0" id="advanced-container">
                             <div class="row">
@@ -116,16 +122,14 @@
                                     {{ form_row(form.useOwnerAsMailer) }}
                                 </div>
                             </div>
-
-                            <br>
+                            <br />
                             <div class="row hidden" id="custom-html-row">
                                 <div class="col-md-12">
                                     {{ form_label(form.customHtml) }}
                                     {{ form_widget(form.customHtml) }}
                                 </div>
                             </div>
-
-                            <br>
+                            <br />
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="pull-left">
@@ -149,15 +153,15 @@
                                         {% set tabHtml = tabHtml ~ '<li><a href="javascript:void(0);" role="tab" class="btn btn-primary" id="addNewDynamicContent"><i class="fa fa-plus text-success"></i> ' ~ 'mautic.core.form.new'|trans ~ '</a></li>' %}
                                         {% set tabContentHtml = '<div class="tab-content pa-md col-xs-9" id="dynamicContentContainer">' %}
                                         {% for i, dynamicContent in form.dynamicContent %}
-                                            {% set linkText = dynamicContent['tokenName'].vars['value'] ?: 'mautic.core.dynamicContent'|trans ~ ' ' ~ (i + 1) %}
+                                            {% set linkText = dynamicContent.tokenName.vars.value is not empty ?: 'mautic.core.dynamicContent'|trans ~ ' ' ~ (i + 1) %}
                                             {% set tabHtml = tabHtml ~ '<li class="' ~ (i is same as 0 ? ' active' : '') ~ '"><a role="tab" data-toggle="tab" href="#' ~ dynamicContent.vars['id'] ~ '">' ~ linkText ~ '</a></li>' %}
-                                            {% set tabContentHtml = tabContentHtml ~ form_widget(dynamicContent) %}
+                                        {# {% set tabContentHtml = tabContentHtml ~ form_widget(dynamicContent) %} #}
                                         {% endfor %}
                                         {% set tabHtml = tabHtml ~ '</ul></div>' %}
                                         {% set tabContentHtml = tabContentHtml ~ '</div>' %}
 
-                                        {{ tabHtml }}
-                                        {{ tabContentHtml }}
+                                        {{ tabHtml |raw }}
+                                        {{ tabContentHtml |raw }}
                                     </div>
                                 </div>
                             </div>
@@ -182,7 +186,6 @@
                     </div>
                     {{ form_row(form.category) }}
                     {{ form_row(form.language) }}
-
                     <div id="segmentTranslationParent"{{ (('template' == emailType) ? ' class="hide"' : '') }}>
                         {{ form_row(form.segmentTranslationParent) }}
                     </div>
@@ -202,25 +205,27 @@
                     {{ form_row(form.preferenceCenter) }}
                 {% endif %}
                 <hr />
-                <h5>{{ mautic.email.utm_tags|trans }}</h5>
+                <h5>{{ 'mautic.email.utm_tags'|trans }}</h5>
                 <br />
                 {% for i, utmTag in form.utmTags %}
                     {{ form_row(utmTag) }}
                 {% endfor %}
             </div>
             <div class="hide">
-                {{ form_rest(form) }}
+            {# {{ form_rest(form) }} #}
             </div>
         </div>
     </div>
-    {{ form_end(form) }}
-    <div id="dynamicContentPrototype" data-prototype="{{ form_widget(dynamicContentPrototype)|escape }}"></div>
-    {% if filterBlockPrototype is instanceof('\Symfony\Component\Form\FormView') %}
+    {# {{ form_end(form) }} #}
+
+    {# <div id="dynamicContentPrototype" data-prototype="{{ form_widget(dynamicContentPrototype) }}"></div> #}
+    {% if get_class(filterBlockPrototype) == "FormView" %}
         <div id="filterBlockPrototype" data-prototype="{{ form_widget(filterBlockPrototype)|escape }}"></div>
     {% endif %}
-    {% if filterSelectPrototype is instanceof('\Symfony\Component\Form\FormView') %}
+    {% if get_class(filterSelectPrototype) == "FormView" %}
         <div id="filterSelectPrototype" data-prototype="{{ form_widget(filterSelectPrototype)|escape }}"></div>
     {% endif %}
+
     <div class="hide" id="templates">
         {% for dataKey, template in templates %}
             {% set attr = ('tags' == dataKey) ? ' data-placeholder="' ~ mautic.lead.tags.select_or_create|trans ~ '" data-no-results-text="' ~ mautic.lead.tags.enter_to_create|trans ~ '" data-allow-add="true" onchange="Mautic.createLeadTag(this)"' : '' %}
@@ -253,7 +258,6 @@
         'objectId'      : email.getSessionId(),
         'previewUrl'    : previewUrl,
     }) -}}
-    {{ form_errors() }}
     {% set type = email.getEmailType() %}
     {% if (updateSelect is empty and not isExisting and not form_errors(form) and not variantParent) or (type is empty) or forceTypeSelection is not empty  %}
         {{- include('MauticCoreBundle:Helper:form_selecttype.html.twig', {
