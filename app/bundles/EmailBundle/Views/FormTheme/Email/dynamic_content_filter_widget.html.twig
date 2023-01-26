@@ -3,7 +3,6 @@
          id="{{ form.vars.id }}">
         <div class="panel">
             {% set tabHtml = '<ul class="bg-auto nav nav-tabs pr-md pl-md" id="dynamicContentFilterTabs_' ~ form.vars.name %}
-
             {% set tabHtml = '<ul class="bg-auto nav nav-tabs pr-md pl-md" id="dynamicContentFilterTabs_' ~ form.vars['name'] ~'">' %}
             {% set tabHtml = tabHtml ~ '<li><a role="tab" class="addNewDynamicContentFilter" data-index="' ~  form.vars['name'] ~
                 '"><i class="fa fa-plus text-success"></i> ' ~  'mautic.core.form.new'|trans  ~ '</a></li>' %}
@@ -24,8 +23,8 @@
             {% set tabHtml = tabHtml ~ '</ul>' %}
             {% set tabContentHtml = tabContentHtml ~ '</div>' %}
 
-            {{ tabHtml }}
-            {{ tabContentHtml }}
+            {{ tabHtml|raw }}
+            {{ tabContentHtml|raw }}
         </div>
     </div>
 {% endblock %}
