@@ -50,7 +50,7 @@
     'MauticEmailBundle:FormTheme:Email/_email_abtest_settings_properties_row.html.twig',
     'MauticEmailBundle:FormTheme:Email/_email_variantSettings_properties_row.html.twig',
     'MauticEmailBundle:FormTheme:Email/_emailform_dynamicContent_entry_content_row.html.twig',
-    'MauticEmailBundle:FormTheme:Email/_emailform_dynamicContent_entry_filters_entry_filters_entry_widget.html.twig',
+    'MauticEmailBundle:FormTheme:Email/_emailform_dynamicContent_entry_filters_widget.html.twig',
     'MauticEmailBundle:FormTheme:Email/_emailform_dynamicContent_rest.html.twig',
     'MauticEmailBundle:FormTheme:Email/dynamic_content_filter_entry_widget.html.twig',
     'MauticEmailBundle:FormTheme:Email/dynamic_content_filter_widget.html.twig',
@@ -155,7 +155,7 @@
                                         {% for i, dynamicContent in form.dynamicContent %}
                                             {% set linkText = dynamicContent.tokenName.vars.value is not empty ?: 'mautic.core.dynamicContent'|trans ~ ' ' ~ (i + 1) %}
                                             {% set tabHtml = tabHtml ~ '<li class="' ~ (i is same as 0 ? ' active' : '') ~ '"><a role="tab" data-toggle="tab" href="#' ~ dynamicContent.vars['id'] ~ '">' ~ linkText ~ '</a></li>' %}
-                                        {# {% set tabContentHtml = tabContentHtml ~ form_widget(dynamicContent) %} #}
+                                            {% set tabContentHtml = tabContentHtml ~ form_widget(dynamicContent) %}
                                         {% endfor %}
                                         {% set tabHtml = tabHtml ~ '</ul></div>' %}
                                         {% set tabContentHtml = tabContentHtml ~ '</div>' %}
@@ -212,13 +212,13 @@
                 {% endfor %}
             </div>
             <div class="hide">
-            {# {{ form_rest(form) }} #}
+            {{ form_rest(form) }}
             </div>
         </div>
     </div>
-    {# {{ form_end(form) }} #}
+    {{ form_end(form) }}
 
-    {# <div id="dynamicContentPrototype" data-prototype="{{ form_widget(dynamicContentPrototype) }}"></div> #}
+    <div id="dynamicContentPrototype" data-prototype="{{ form_widget(dynamicContentPrototype) }}"></div>
     {% if get_class(filterBlockPrototype) == "FormView" %}
         <div id="filterBlockPrototype" data-prototype="{{ form_widget(filterBlockPrototype)|escape }}"></div>
     {% endif %}
