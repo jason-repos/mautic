@@ -16,13 +16,13 @@
 {% endif %}
 
 {% set variantParent = email.getVariantParent() %}
-{% set isExisting    = email.getId() %}
+{% set isExisting    = email.getId() is defined %}
 
-{% set subheader = variantParent ? '<div><span class="small">' ~ 'mautic.core.variant_of'|trans({'%name%' : email.getName(), '%parent%' : variantParent.getName()}) ~ '</span></div>' : '' %}
+{% set subheader = variantParent is defined and variantParent is not empty ? '<div><span class="small">' ~ 'mautic.core.variant_of'|trans({'%name%' : email.getName(), '%parent%' : variantParent.name}) ~ '</span></div>' : '' %}
 
 {% set header = isExisting ? 'mautic.email.header.edit'|trans({'%name%' : email.getName()}) : 'mautic.email.header.new'|trans %}
 
-{% block headerTitle %}{{ header ~ subheader }}{% endblock %}
+{% block headerTitle %}{{ (header ~ subheader)|raw }}{% endblock %}
 
 {% set emailType = form.emailType.vars.data %}
 
@@ -55,6 +55,7 @@
     'MauticEmailBundle:FormTheme:Email/dynamic_content_filter_entry_widget.html.twig',
     'MauticEmailBundle:FormTheme:Email/dynamic_content_filter_widget.html.twig',
 ] %}
+
 {% block content %}
     {{ form_start(form, {'attr' : attr}) }}
     <div class="box-layout">
@@ -261,8 +262,8 @@
         'objectId'      : email.getSessionId(),
         'previewUrl'    : previewUrl,
     }) -}}
-    {% set type = email.getEmailType() %}
-    {% if (updateSelect is empty and not isExisting and not form_errors(form) and not variantParent) or (type is empty) or forceTypeSelection is not empty %}
+    {% set type = email.emailType %}
+    {% if ((updateSelect is not defined and not isExisting and not form_errors(form) and not variantParent) or type is not defined or (forceTypeSelection is defined and forceTypeSelection)) %}
         {{- include('MauticCoreBundle:Helper:form_selecttype.html.twig', {
             'item'       : email,
             'mauticLang' : {
