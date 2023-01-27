@@ -1,7 +1,7 @@
 {% extends 'MauticCoreBundle:Default:content.html.twig' %}
 
 {% block mauticContent %}emailSend{% endblock %}
-{% block headerTitle %}{{ 'mautic.email.send.list'|trans ({'%name%' : email.getName()}) }}{% endblock %}
+{% block headerTitle %}{{ ('mautic.email.send.list'|trans ({'%name%' : email.getName()})) | raw }}{% endblock %}
 
 {% block content %}
     <div class="row">
