@@ -74,7 +74,7 @@
                                 {{ 'mautic.core.advanced'|trans }}
                             </a>
                         </li>
-                        <li id="dynamic-content-tab" {{ (isCodeMode is not defined) ? 'class="hidden"' : '' }}>
+                        <li id="dynamic-content-tab" {{ (isCodeMode) ? '' : 'class="hidden"' }}>
                             <a href="#dynamic-content-container" role="tab" data-toggle="tab">
                                 {{ 'mautic.core.dynamicContent'|trans }}
                             </a>
@@ -155,7 +155,8 @@
                                         {% set tabHtml = tabHtml ~ '<li><a href="javascript:void(0);" role="tab" class="btn btn-primary" id="addNewDynamicContent"><i class="fa fa-plus text-success"></i> ' ~ 'mautic.core.form.new'|trans ~ '</a></li>' %}
                                         {% set tabContentHtml = '<div class="tab-content pa-md col-xs-9" id="dynamicContentContainer">' %}
                                         {% for i, dynamicContent in form.dynamicContent %}
-                                            {% set linkText = dynamicContent.tokenName.vars.value is not empty ?: 'mautic.core.dynamicContent'|trans ~ ' ' ~ (i + 1) %}
+                                            {% set name = dynamicContent.tokenName.vars.value %}
+                                            {% set linkText = name is defined ? name : 'mautic.core.dynamicContent'|trans ~ ' ' ~ (i + 1) %}
                                             {% set tabHtml = tabHtml ~ '<li class="' ~ (i is same as 0 ? ' active' : '') ~ '"><a role="tab" data-toggle="tab" href="#' ~ dynamicContent.vars['id'] ~ '">' ~ linkText ~ '</a></li>' %}
                                             {% set tabContentHtml = tabContentHtml ~ form_widget(dynamicContent) %}
                                         {% endfor %}
