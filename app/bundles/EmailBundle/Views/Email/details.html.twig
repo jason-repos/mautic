@@ -21,7 +21,7 @@
     }
 ) %}
 
-{% set showVariants = variantContent|trim is not empty %}
+{% set showVariants = variantContent is defined and variantContent|trim is not empty %}
 
 {% set translationContent = include('MauticCoreBundle:Translation:index.html.twig',
     {
