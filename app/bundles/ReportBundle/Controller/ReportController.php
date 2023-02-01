@@ -414,9 +414,9 @@ class ReportController extends FormController
             [
                 'viewParameters' => [
                     'report' => $entity,
-                    'form'   => $this->setFormTheme($form, 'MauticReportBundle:Report:form.html.php', 'MauticReportBundle:FormTheme\Report'),
+                    'form'   => $this->setFormTheme($form, 'MauticReportBundle:Report:form.html.twig', 'MauticReportBundle:FormTheme\Report'),
                 ],
-                'contentTemplate' => 'MauticReportBundle:Report:form.html.php',
+                'contentTemplate' => 'MauticReportBundle:Report:form.html.twig',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_report_index',
                     'mauticContent' => 'report',
@@ -518,9 +518,9 @@ class ReportController extends FormController
             [
                 'viewParameters' => [
                     'report' => $entity,
-                    'form'   => $this->setFormTheme($form, 'MauticReportBundle:Report:form.html.php', 'MauticReportBundle:FormTheme\Report'),
+                    'form'   => $this->setFormTheme($form, 'MauticReportBundle:Report:form.html.twig', 'MauticReportBundle:FormTheme\Report'),
                 ],
-                'contentTemplate' => 'MauticReportBundle:Report:form.html.php',
+                'contentTemplate' => 'MauticReportBundle:Report:form.html.twig',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_report_index',
                     'mauticContent' => 'report',
