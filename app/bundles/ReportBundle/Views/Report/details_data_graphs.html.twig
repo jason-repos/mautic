@@ -5,7 +5,6 @@
             {% for key in graphOrder %}
                 {% set details = attribute(graphs, key) %}
                 {% if details.data is defined %}
-                    {{ key }}
                     {% if rowCount >= 12 %}
                         </div><div class="row equal">
                         {% set rowCount = 0 %}

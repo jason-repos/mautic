@@ -4,7 +4,7 @@
             <h3 class="panel-title">
                 {{ graph.name|trans }}
                 <div class="pull-right">
-                    <span class="fa fa-{{ graph.iconClass is defined ?: '' }}"></span>
+                    <span class="fa fa-{{ graph.iconClass is defined ? graph.iconClass : '' }}"></span>
                 </div>
             </h3>
         </div>
@@ -33,11 +33,13 @@
                                         </a>
                                     </td>
                                 {% elseif 'id' != cellName %}
+                                    <td>
                                     {% if cell matches '/^\\d+$/' %}
                                         {{ cell }}
                                     {% else %}
 
                                     {% endif %}
+                                    </td>
                                 {% endif %}
                             {% endfor %}
                         </tr>
