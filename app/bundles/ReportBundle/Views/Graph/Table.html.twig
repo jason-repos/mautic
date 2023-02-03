@@ -27,15 +27,16 @@
                             {% for cellName, cell in row %}
                                 {% if graph.data.0.id is defined and 'title' == cellName and graph.link is defined %}
                                     <td>
-                                        <a href="{{ path(graph.link, {'objectAction' : 'view', 'objectId', row.id}) }}" data-toggle="ajax">
+                                        <a href="{{ path(graph.link, {'objectAction' : 'view', 'objectId' :  row.id}) }}"
+                                           data-toggle="ajax">
                                             {{ cell }}
                                         </a>
                                     </td>
                                 {% elseif 'id' != cellName %}
-                                    {% if cell is integer %}
+                                    {% if cell matches '/^\\d+$/' %}
                                         {{ cell }}
                                     {% else %}
-                                        {{ makeLink(cell) }}
+
                                     {% endif %}
                                 {% endif %}
                             {% endfor %}
