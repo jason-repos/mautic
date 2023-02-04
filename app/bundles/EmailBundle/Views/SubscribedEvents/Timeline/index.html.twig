@@ -1,59 +1,58 @@
-{% if (event.extra is defined) ? event.extra.stat : false %}
-    {% set item = event.extra %}
-<p>
-    {% if item.isFailed is not empty %}
-
-        {% if item.openDetails.bounces is defined %}
-            <span class="label label-warning"
-                  data-toggle="tooltip"
-                  title="{{ mautic.email.timeline.event.bounced|trans }}">
-                        {{ mautic.email.timeline.event.bounced|trans }}
-            </span>
+{#
+  Variables
+    - event
+    - lead
+#}
+{% set item = event.extra is defined and event.extra is not empty ? event.extra.stat : false %}
+{% if item != false %}
+    <p>
+        {% if item.isFailed is not empty and item.isFailed %}
+            {% if item.openDetails.bouces is defined %}
+                <span class="label label-warning" data-toggle="tooltip" title="{{ 'mautic.email.timeline.event.bounced'|trans }}">
+                    {{ 'mautic.email.timeline.event.bounced'|trans }}
+                </span>
+            {% else %}
+                {{ 'mautic.email.timeline.event.failed'|trans }}
+            {% endif %}
+        {% elseif item.dateRead is empty %}
+            {{ 'mautic.email.timeline.event.not.read'|trans|raw }}
         {% else %}
-            {{ mautic.email.timeline.event.failed|trans }}
+            {{ ('mautic.email.timeline.event.' ~ event['extra']['type'])|trans({
+                    '%date%': dateToFull(event['timestamp']),
+                    '%interval%': dateFormatRange(event['timestamp']),
+                    '%sent%': dateToFull(item['dateSent']),
+            }) }}
         {% endif %}
-    {% elseif item.dateRead is not empty %}
-        {{ mautic.email.timeline.event.not.read|trans }}
-    {% else %}
-        {{ 'mautic.email.timeline.event.' ~ event.extra.type|trans ({
-            '%date%'     : dateToFull(event.timestamp),
-            '%interval%' : dateToDate(event.timestamp),
-            '%sent%'     : dateToFull(item.dateSent),
-        }) }}
-    {% endif %}
-    {% if item.viewedInBrowser is not empty %}
-        {{ mautic.email.timeline.event.viewed.in.browser|trans }}
-    {% endif %}
-    {% if item.retryCount is not empty %}
-        {{ 'mautic.email.timeline.event.retried'|trans({'%count%' : item.retryCount}) }}
-    {% endif %}
-    {% if item.list_name is not empty %}
-        {{ 'mautic.email.timeline.event.list'|trans({'%list%' : item.list_name}) }}
-    {% endif %}
-</p>
-<div class="small">
-    {% if item.openDetails is not empty %}
-        <h6 class="mt-lg mb-sm"><strong>{% trans %}mautic.email.timeline.open_details{% endtrans %}</strong></h6>
-    {% endif %}
 
-    {% set counter = 1 %}
-    {% for detail in item.openDetails|filter((v, k) => k != 'bounces') %}
-        {% if showMore is empty and counter > 5 %}
-            {% set showMore = true %}
-            <div style="display:none">
+        {% if item.viewedInBrowser is not empty and item.viewedInBrowser %}
+            {{ 'mautic.email.timeline.event.viewed.in.browser'|trans }}
         {% endif %}
-        {% if counter > 1 %}
-            <hr/>
-        {% endif %}
-        <strong>{{ dateToText(detail.datetime, 'UTC') }}</strong><br/>{{ detail.useragent|escape }}
-        {% set counter = counter + 1 %}
-    {% endfor %}
 
-    {% if showMore is not empty %}
-        </div>
-        <a href="javascript:void(0);" class="text-center small center-block mt-xs" onclick="Mautic.toggleTimelineMoreVisiblity(mQuery(this).prev());">'
-        {{ mautic.core.more.show|trans }}
-        </a>
-    {% endif %}
+        {% if item.retryCount is not empty and item.retryCount %}
+            {{ 'mautic.email.timeline.event.retried'|trans({'%count%': item['retryCount']})}}
+        {% endif %}
+
+        {% if item.list_name is not empty %}
+            {{ 'mautic.email.timeline.event.list'|trans({'%list%': item['list_name']}) }}
+        {% endif %}
+    </p>
+    <div class="small">
+      {% if item.openDetails is not empty %}
+        <h6 class="mt-lg mb-sm"><strong>{{ 'mautic.email.timeline.open_details'|trans }}</strong></h6>
+        {% for key, detail in item.openDetails %}
+            {% if 'bouces' != key %}
+              {% if showMore is empty and loop.index > 5 %}
+                  {% set showMore = true %}
+                  <div style="display:none">
+              {% endif %}
+              {% if loop.index > 1 %}<hr/>{% endif %}
+              <strong>{{ dateToText(detail['datetime'], 'UTC') }}</strong><br/>{{ detail['useragent']|e }}
+            {% endif %}
+        {% endfor %}
+        {% if showMore is defined %}
+            </div>
+            <a href="javascript:void(0);" class="text-center small center-block mt-xs" onclick="Mautic.toggleTimelineMoreVisiblity(mQuery(this).prev());">{{ 'mautic.core.more.show'|trans }}</a>
+        {% endif %}
+      {% endif %}
     </div>
 {% endif %}
