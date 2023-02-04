@@ -4,7 +4,7 @@
             <h3 class="panel-title">
                 {{ graph.name|trans }}
                 <div class="pull-right">
-                    <span class="fa fa-{{ graph.iconClass is defined ? graph.iconClass : '' }}"></span>
+                    <span class="fa {{ graph.iconClass is defined ? graph.iconClass : '' }}"></span>
                 </div>
             </h3>
         </div>
@@ -25,7 +25,7 @@
                     {% for rowKey, row in graph.data %}
                         <tr>
                             {% for cellName, cell in row %}
-                                {% if graph.data.0.id is defined and 'title' == cellName and graph.link is defined %}
+                                {% if attribute(graph.data.0, 'id') is defined and 'title' == cellName and graph.link is defined %}
                                     <td>
                                         <a href="{{ path(graph.link, {'objectAction' : 'view', 'objectId' :  row.id}) }}"
                                            data-toggle="ajax">
@@ -34,11 +34,11 @@
                                     </td>
                                 {% elseif 'id' != cellName %}
                                     <td>
-                                    {% if cell matches '/^\\d+$/' %}
-                                        {{ cell }}
-                                    {% else %}
-
-                                    {% endif %}
+                                        {% if cell matches '/^\\d+$/' %}
+                                            {{ cell }}
+                                        {% else %}
+                                            {{ cell }}
+                                        {% endif %}
                                     </td>
                                 {% endif %}
                             {% endfor %}
