@@ -13,8 +13,8 @@
     'graphs' : graphs,
     'report' : report
 }) %}
-{% block content %}
-    {% if showGraphsAboveTable is defined %}
+{% block dataContent %}
+    {% if showGraphsAboveTable %}
         {{ graphContent|raw }}
     {% endif %}
     {% if columnOrder is defined and aggregatorOrder is defined %}
@@ -27,28 +27,56 @@
                             <tr>
                                 <th class="col-report-count"></th>
                                 {% for key in columnOrder %}
-                                    {% if columns.key is defined %}
-                                        {% set orderBy = columns.key.alias is defined ?: ('channel.' in key ? key|replace('.', '_') : key) %}
+                                    {% set columnKey = attribute(columns, key) %}
+                                    {% if columnKey is defined %}
+                                        {% set orderBy = columnKey.alias is defined ?: ('channel.' in key ? key|replace('.', '_') : key) %}
                                         {{ include('MauticCoreBundle:Helper:tableheader.html.twig', {
                                             'sessionVar' : 'report.' ~ report.id,
                                             'orderBy' : orderBy,
-                                            'text' : columns.key.label,
-                                            'class' : 'col-report-' ~ columns.key.type,
-                                            'dataToggle' : ['date', 'datetime'] in columns.key.type ? 'date' : '',
+                                            'text' : columnKey.label,
+                                            'class' : 'col-report-' ~ columnKey.type,
+                                            'dataToggle' : ['date', 'datetime'] in columnKey.type ? 'date' : '',
                                             'target' : '.report-content'
                                          }) }}
                                     {% else %}
                                     {% endif %}
                                 {% endfor %}
                                 {% if aggregatorCount > 0 %}
+                                    {% set index = 0 %}
                                     {% for aggregator in aggregatorOrder %}
+                                        {{ include('MauticCoreBundle:Helper:tableheader.html.twig', {
+                                            'sessionVar' : 'report.' ~ report.id,
+                                            'text' : aggregator.function ~ ' ' ~ columnName,
+                                            'orderBy' : '`' ~ aggregator.function ~ ' ' ~ aggregator.column ~ '`',
+                                            'dataToggle' : '',
+                                            'target' : '.report-content'
+                                        }) }}
+                                        {% set index = index + 1 %}
                                     {% endfor %}
                                 {% endif %}
                             </tr>
                             </thead>
                             <tbody>
                                 {% if dataCount > 0 %}
+                                    {% set avgCounter = 0 %}
                                     {% for row in data %}
+                                        <tr>
+                                            <td>{{ startCount }}</td>
+                                            {% for key in columnOrder %}
+                                                {% if attribute(columns, key) is defined %}
+                                                    <td>
+                                                        {% set closeLink = false %}
+                                                        {% set attrKey = attribute(columns, key) %}
+                                                        {% if attrKey.link is defined and attrKey.alias is not empty %}
+                                                            {% set closeLink = true %}
+                                                            <a href="{{ path(attrKey.link, {'objectAction' : 'view', 'objectId' : attribute(row, attrKey.alias)}) }}" class="label label-success">
+
+                                                            </a>
+                                                        {% endif %}
+                                                    </td>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tr>
                                     {% endfor %}
                                 {% else %}
                                     <tr>
@@ -77,11 +105,21 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="panel-footer">
+                        {{ include('MauticCoreBundle:Helper:pagination.html.twig', {
+                            'totalItems' : totalResults,
+                            'page' : reportPage,
+                            'limit' : limit,
+                            'baseUrl' : path('mautic_report_view', {'objectId' : report.id}),
+                            'sessionVar' : 'report.' ~ report.id,
+                            'target' : '.report-content'
+                        }) }}
+                    </div>
                 </div>
             </div>
         </div>
     {% endif %}
-    {% if showGraphsAboveTable is not defined %}
+    {% if not showGraphsAboveTable %}
         {{ graphContent|raw }}
     {% endif %}
     <script>

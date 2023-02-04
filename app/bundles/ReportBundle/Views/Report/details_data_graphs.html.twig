@@ -6,7 +6,7 @@
                 {% set details = attribute(graphs, key) %}
                 {% if details.data is defined %}
                     {% if rowCount >= 12 %}
-                        </div><div class="row equal">
+                        {{ '</div><div class="row equal">' }}
                         {% set rowCount = 0 %}
                     {% endif %}
                     {{ include('MauticReportBundle:Graph:' ~ details.type|capitalize ~ '.html.twig', {
