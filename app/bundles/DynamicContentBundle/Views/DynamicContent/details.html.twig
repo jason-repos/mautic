@@ -72,20 +72,20 @@
                         {% if entity.isVariant(true) %}
                             <div class="small">
                                 <a href="{{ path('mautic_dynamicContent_action', {'objectAction': 'view', 'objectId': variants.parent.getId()}) }}" data-toggle="ajax">
-                                    {% trans with {'%parent%': variants.parent.getName()} %}mautic.core.variant_of{% endtrans %}
+                                    {{ 'mautic.core.variant_of'|trans({'%parent%': varants.parent.name}) }}
                                 </a>
                             </div>
                         {% endif %}
                         {% if entity.isTranslation(true) %}
                             <div class="small">
                                 <a href="{{ path('mautic_dynamicContent_action', {'objectAction': 'view', 'objectId': translations.parent.getId()}) }}" data-toggle="ajax">
-                                    {% trans with {'%parent%': translations.parent.getName()} %}mautic.core.translation_of{% endtrans %} ?>
+                                    {{ 'mautic.core.translation_of'|trans({'%parent%': translations.parent.name}) }}
                                 </a>
                             </div>
                         {% endif %}
                         {% if entity.getIsCampaignBased() is empty %}
                             <div class="small">
-                                {% trans with {'%slot%': entity.getSlotName()}%}mautic.dynamicContent.header.is_filter_based{% endtrans %}
+                                {{ 'mautic.dynamicContent.header.is_filter_based'|trans({'%slot%' : entity.getSlotName()}) }}
                             </div>
                         {% endif %}
                     </div>
