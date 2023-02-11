@@ -11,6 +11,7 @@ use Mautic\ReportBundle\Entity\Report;
 use Mautic\ReportBundle\Form\Type\DynamicFiltersType;
 use Mautic\ReportBundle\Model\ExportResponse;
 use Mautic\ReportBundle\Model\ReportModel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -109,7 +110,7 @@ class ReportController extends FormController
                     'tmpl'        => $this->request->isXmlHttpRequest() ? $this->request->get('tmpl', 'index') : 'index',
                     'security'    => $this->container->get('mautic.security'),
                 ],
-                'contentTemplate' => 'MauticReportBundle:Report:list.html.php',
+                'contentTemplate' => 'MauticReportBundle:Report:list.html.twig',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_report_index',
                     'mauticContent' => 'report',
@@ -414,9 +415,9 @@ class ReportController extends FormController
             [
                 'viewParameters' => [
                     'report' => $entity,
-                    'form'   => $this->setFormTheme($form, 'MauticReportBundle:Report:form.html.php', 'MauticReportBundle:FormTheme\Report'),
+                    'form'   => $this->setFormTheme($form, 'MauticReportBundle:Report:form.html.twig', 'MauticReportBundle:FormTheme\Report'),
                 ],
-                'contentTemplate' => 'MauticReportBundle:Report:form.html.php',
+                'contentTemplate' => 'MauticReportBundle:Report:form.html.twig',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_report_index',
                     'mauticContent' => 'report',
@@ -518,9 +519,9 @@ class ReportController extends FormController
             [
                 'viewParameters' => [
                     'report' => $entity,
-                    'form'   => $this->setFormTheme($form, 'MauticReportBundle:Report:form.html.php', 'MauticReportBundle:FormTheme\Report'),
+                    'form'   => $this->setFormTheme($form, 'MauticReportBundle:Report:form.html.twig', 'MauticReportBundle:FormTheme\Report'),
                 ],
-                'contentTemplate' => 'MauticReportBundle:Report:form.html.php',
+                'contentTemplate' => 'MauticReportBundle:Report:form.html.twig',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_report_index',
                     'mauticContent' => 'report',
@@ -682,6 +683,7 @@ class ReportController extends FormController
                     ),
                     'dateRangeForm'     => $dateRangeForm->createView(),
                     'dynamicFilterForm' => $dynamicFilterForm->createView(),
+                    'spreadsheetExist'  => class_exists(Spreadsheet::class),
                 ],
                 'contentTemplate' => $reportData['contentTemplate'],
                 'passthroughVars' => [
