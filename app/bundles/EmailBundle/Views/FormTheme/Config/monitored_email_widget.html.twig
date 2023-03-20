@@ -1,0 +1,16 @@
+{% for child in form.children %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {% trans %}child.vars.label{% endtrans %}
+            </h3>
+        </div>
+        <div class="panel-body">
+            {% set tooltip = translatorHasId(child.vars['label'] ~ '.tooltip') ? child.vars['label'] ~ '.tooltip'|trans : '' %}
+            {% if tooltip %}
+                <p>{{ tooltip }}</p>
+            {% endif %}
+            {{ form_widget(child) }}
+        </div>
+    </div>
+{% endfor %}
